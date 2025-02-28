@@ -138,3 +138,14 @@ if __name__ == "__main__":
     # 🔹 Configurar o webhook
     bot.set_webhook(url="https://v0-baldwinbot.vercel.app/{TELEGRAM_BOT_TOKEN}")
     app.run(host="0.0.0.0", port=5000)
+
+    # 🔹 Iniciar o bot e capturar erros
+try:
+    print("✅ Bot iniciado com sucesso! Aguardando comandos...")
+    bot.send_message(CHAT_LOGS_ID, "🚀 *Bot iniciado com sucesso!* Aguardando comandos...", parse_mode='Markdown')
+    bot.polling(none_stop=True, interval=0)
+except Exception as e:
+    erro_msg = f"❌ *Erro ao iniciar o bot:* {e}"
+    print(erro_msg)
+    bot.send_message(CHAT_LOGS_ID, erro_msg, parse_mode='Markdown')
+    input("Pressione ENTER para sair...")
