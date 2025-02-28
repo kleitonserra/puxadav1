@@ -136,5 +136,5 @@ def webhook():
 
 if __name__ == "__main__":
     # 🔹 Configurar o webhook
-    bot.set_webhook(url="https://497e-179-0-119-232.ngrok-free.app/{TELEGRAM_BOT_TOKEN}")
+    bot.set_webhook(url="https://v0-baldwinbot.vercel.app/{TELEGRAM_BOT_TOKEN}")
     app.run(host="0.0.0.0", port=5000)
