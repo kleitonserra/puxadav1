@@ -2,14 +2,18 @@
   "version": 2,
   "builds": [
     {
-      "src": "api/CONSULTA_V1.py",
+      "src": "CONSULTA_V1.py",
       "use": "@vercel/python"
     }
   ],
   "routes": [
     {
       "src": "/",
-      "dest": "api/CONSULTA_V1.py"
+      "dest": "CONSULTA_V1.py"
+    },
+    {
+      "src": "/set_webhook",
+      "dest": "CONSULTA_V1.py"
     }
   ]
 }
