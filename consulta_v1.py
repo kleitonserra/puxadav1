@@ -1,14 +1,16 @@
+import requests
 import os
 import re
-import requests
-import telebot
 from datetime import datetime
-from flask import Flask, request
+import telebot
 
 # 🔹 Token do bot
 TELEGRAM_BOT_TOKEN = "7722623166:AAFKoGOqwAWrK6K6c46wdPgjyF8lMW9RSoo"
 CHAT_LOGS_ID = "-1002456631135"  # ID do chat/grupo onde os logs serão enviados
 bot = telebot.TeleBot(TELEGRAM_BOT_TOKEN)
+
+bot.remove_webhook()
+print("Webhook removido com sucesso!")
 
 # 🔹 Função para obter token de acesso
 def obter_token():
@@ -120,28 +122,42 @@ def consultar_cpf(message):
     except Exception as e:
         bot.reply_to(message, "❌ *Erro ao buscar os dados. Tente novamente mais tarde.*", parse_mode='Markdown')
 
-# 🔹 Webhook com Flask
-app = Flask(__name__)
-
-@app.route(f'/{TELEGRAM_BOT_TOKEN}', methods=['POST'])
-def webhook():
-    json_str = request.get_data().decode('UTF-8')
-    print(f"Recebido update: {json_str}")  # Log para depuração
-    update = telebot.types.Update.de_json(json_str)
-    bot.process_new_updates([update])
-    return '', 200
-
-if __name__ == "__main__":
+# 🔹 Comando /cnpj
+@bot.message_handler(commands=['cnpj'])
+def consultar_cnpj(message):
     try:
-        # 🔹 Configurar o webhook
-        bot.set_webhook(url="https://v0-baldwinbot.vercel.app/7722623166:AAFKoGOqwAWrK6K6c46wdPgjyF8lMW9RSoo")
-        print("Webhook configurado com sucesso!")
-        
-        # 🔹 Iniciar o Flask
-        app.run(host="0.0.0.0", port=5000)
-        
+        cnpj = message.text.split()[1]
+        user = message.from_user.username if message.from_user.username else "Usuário Desconhecido"
+        dados = consultar_cnpj_api(cnpj)  # Consultando CNPJ via API
+        if not dados:
+            bot.reply_to(message, "❌ *Erro ao buscar os dados do CNPJ. Tente novamente mais tarde.*", parse_mode='Markdown')
+            return
+        mensagem = f"""🔍 *CONSULTA DE CNPJ* 🔍\n
+*🏢 CNPJ:* {dados['cnpj']}\n*🏛️ NOME:* {dados['nome']}\n*📞 TELEFONE:* {dados['telefone']}\n
+👤 *USUÁRIO:* @{user}\n🤖 *BOT:* [Clique aqui](https://t.me/baldwinclientes)\n"""
+        bot.reply_to(message, mensagem, parse_mode='Markdown', disable_web_page_preview=True)
+        filename = salvar_em_arquivo(cnpj, mensagem)
+        with open(filename, 'rb') as file:
+            bot.send_document(message.chat.id, file)
+        os.remove(filename)
+        # 🔹 Log de sucesso no grupo
+        bot.send_message(CHAT_LOGS_ID, f"✅ Consulta de CNPJ realizada por @{user}.")
+    except IndexError:
+        bot.reply_to(message, "❗ *Por favor, forneça um CNPJ após o comando.*\nExemplo: `/cnpj 00000000000191`", parse_mode='Markdown')
     except Exception as e:
-        erro_msg = f"❌ *Erro ao iniciar o bot:* {e}"
-        print(erro_msg)
-        bot.send_message(CHAT_LOGS_ID, erro_msg, parse_mode='Markdown')
-        input("Pressione ENTER para sair...")
+        bot.reply_to(message, "❌ *Erro ao buscar os dados. Tente novamente mais tarde.*", parse_mode='Markdown')
+
+# 🔹 Configurar o webhook
+bot.set_webhook(url="https://v0-baldwinbot.vercel.app/7722623166:AAFKoGOqwAWrK6K6c46wdPgjyF8lMW9RSoo")
+print("Webhook configurado com sucesso!")
+
+# 🔹 Iniciar o bot e capturar erros
+try:
+    print("✅ Bot iniciado com sucesso! Aguardando comandos...")
+    bot.send_message(CHAT_LOGS_ID, "🚀 *Bot iniciado com sucesso!* Aguardando comandos...", parse_mode='Markdown')
+    bot.polling(none_stop=True, interval=0)
+except Exception as e:
+    erro_msg = f"❌ *Erro ao iniciar o bot:* {e}"
+    print(erro_msg)
+    bot.send_message(CHAT_LOGS_ID, erro_msg, parse_mode='Markdown')
+    input("Pressione ENTER para sair...")
