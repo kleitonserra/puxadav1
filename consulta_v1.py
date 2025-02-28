@@ -146,6 +146,7 @@ def consultar_cnpj(message):
 
 # 🔹 Configurar o webhook
 webhook_url = f"https://v0-baldwinbot.vercel.app/{TELEGRAM_BOT_TOKEN}"
+bot.remove_webhook()
 bot.set_webhook(url=webhook_url)
 print("Webhook configurado com sucesso!")
 
