@@ -9,9 +9,6 @@ TELEGRAM_BOT_TOKEN = "7722623166:AAFKoGOqwAWrK6K6c46wdPgjyF8lMW9RSoo"
 CHAT_LOGS_ID = "-1002456631135"  # ID do chat/grupo onde os logs serão enviados
 bot = telebot.TeleBot(TELEGRAM_BOT_TOKEN)
 
-bot.remove_webhook()
-print("Webhook removido com sucesso!")
-
 # 🔹 Função para obter token de acesso
 def obter_token():
     url = "https://servicos-cloud.saude.gov.br/pni-bff/v1/autenticacao/tokenAcesso"
@@ -148,7 +145,8 @@ def consultar_cnpj(message):
         bot.reply_to(message, "❌ *Erro ao buscar os dados. Tente novamente mais tarde.*", parse_mode='Markdown')
 
 # 🔹 Configurar o webhook
-bot.set_webhook(url="https://v0-baldwinbot.vercel.app/7722623166:AAFKoGOqwAWrK6K6c46wdPgjyF8lMW9RSoo")
+webhook_url = f"https://v0-baldwinbot.vercel.app/{TELEGRAM_BOT_TOKEN}"
+bot.set_webhook(url=webhook_url)
 print("Webhook configurado com sucesso!")
 
 # 🔹 Iniciar o bot e capturar erros
