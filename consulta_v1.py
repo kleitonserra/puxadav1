@@ -134,7 +134,7 @@ def webhook():
 if __name__ == "__main__":
     try:
         # 🔹 Configurar o webhook
-        bot.set_webhook(url=f"https://v0-baldwinbot.vercel.app/{TELEGRAM_BOT_TOKEN}")
+        bot.set_webhook(url="https://v0-baldwinbot.vercel.app/7722623166:AAFKoGOqwAWrK6K6c46wdPgjyF8lMW9RSoo")
         print("Webhook configurado com sucesso!")
         
         # 🔹 Iniciar o Flask
