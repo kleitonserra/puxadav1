@@ -1,4 +1,0 @@
-telebot
-flask
-requests
-gunicorn
