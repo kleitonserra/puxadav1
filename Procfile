@@ -1,1 +1,1 @@
-web: gunicorn app:app
+web: python consulta_v1.py
