@@ -10,11 +10,7 @@ TELEGRAM_BOT_TOKEN = "7722623166:AAFKoGOqwAWrK6K6c46wdPgjyF8lMW9RSoo"
 CHAT_LOGS_ID = "-1002456631135"  # ID do chat/grupo onde os logs serão enviados
 bot = telebot.TeleBot(TELEGRAM_BOT_TOKEN)
 
-# 🔹 Remover Webhook se existir (removido)
-# bot.remove_webhook()
-# print("Webhook removido com sucesso!")
-
-# 🔹 Função para obter token de acesso (a mesma do código anterior)
+# 🔹 Função para obter token de acesso
 def obter_token():
     url = "https://servicos-cloud.saude.gov.br/pni-bff/v1/autenticacao/tokenAcesso"
     headers = {
@@ -33,7 +29,7 @@ def obter_token():
             return token.group(1)
     return None
 
-# 🔹 Função para calcular signo (a mesma do código anterior)
+# 🔹 Função para calcular signo
 def calcular_signo(data_nascimento):
     signos = [
         (1, 20, 'Aquário'), (2, 19, 'Peixes'), (3, 21, 'Áries'), (4, 20, 'Touro'),
@@ -50,14 +46,14 @@ def calcular_signo(data_nascimento):
         return "Data inválida"
     return 'Capricórnio'
 
-# 🔹 Função para salvar consulta em arquivo (a mesma do código anterior)
+# 🔹 Função para salvar consulta em arquivo
 def salvar_em_arquivo(identificador, dados):
     filename = f"{identificador}.txt"
     with open(filename, 'w', encoding='utf-8') as file:
         file.write(dados)
     return filename
 
-# 🔹 Função para extrair dados e formatar a resposta (a mesma do código anterior)
+# 🔹 Função para extrair dados e formatar a resposta
 def extrair_dados_cpf(response_json, user):
     if not response_json or 'records' not in response_json:
         return "Nenhum dado encontrado para o CPF."
@@ -71,7 +67,7 @@ def extrair_dados_cpf(response_json, user):
 👤 *USUÁRIO:* @{user}\n🤖 *BOT:* [Clique aqui](https://t.me/baldwinclientes)\n"""
     return cpf, mensagem
 
-# 🔹 Função para consultar CPF via API (a mesma do código anterior)
+# 🔹 Função para consultar CPF via API
 def consultar_cpf_api(cpf, token):
     url = f"https://servicos-cloud.saude.gov.br/pni-bff/v1/cidadao/cpf/{cpf}"
     headers = {
@@ -88,7 +84,7 @@ def consultar_cpf_api(cpf, token):
         return response.json()
     return None
 
-# 🔹 Função para consultar CNPJ via API (a mesma do código anterior)
+# 🔹 Função para consultar CNPJ via API
 def consultar_cnpj_api(cnpj):
     url = f"https://receitaws.com.br/v1/cnpj/{cnpj}"
     headers = {"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64)"}
@@ -130,22 +126,22 @@ app = Flask(__name__)
 @app.route(f'/{TELEGRAM_BOT_TOKEN}', methods=['POST'])
 def webhook():
     json_str = request.get_data().decode('UTF-8')
+    print(f"Recebido update: {json_str}")  # Log para depuração
     update = telebot.types.Update.de_json(json_str)
     bot.process_new_updates([update])
     return '', 200
 
 if __name__ == "__main__":
-    # 🔹 Configurar o webhook
-    bot.set_webhook(url="https://v0-baldwinbot.vercel.app/{TELEGRAM_BOT_TOKEN}")
-    app.run(host="0.0.0.0", port=5000)
-
-    # 🔹 Iniciar o bot e capturar erros
-try:
-    print("✅ Bot iniciado com sucesso! Aguardando comandos...")
-    bot.send_message(CHAT_LOGS_ID, "🚀 *Bot iniciado com sucesso!* Aguardando comandos...", parse_mode='Markdown')
-    bot.polling(none_stop=True, interval=0)
-except Exception as e:
-    erro_msg = f"❌ *Erro ao iniciar o bot:* {e}"
-    print(erro_msg)
-    bot.send_message(CHAT_LOGS_ID, erro_msg, parse_mode='Markdown')
-    input("Pressione ENTER para sair...")
+    try:
+        # 🔹 Configurar o webhook
+        bot.set_webhook(url=f"https://v0-baldwinbot.vercel.app/{TELEGRAM_BOT_TOKEN}")
+        print("Webhook configurado com sucesso!")
+        
+        # 🔹 Iniciar o Flask
+        app.run(host="0.0.0.0", port=5000)
+        
+    except Exception as e:
+        erro_msg = f"❌ *Erro ao iniciar o bot:* {e}"
+        print(erro_msg)
+        bot.send_message(CHAT_LOGS_ID, erro_msg, parse_mode='Markdown')
+        input("Pressione ENTER para sair...")
