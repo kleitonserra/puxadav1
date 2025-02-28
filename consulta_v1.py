@@ -10,9 +10,9 @@ TELEGRAM_BOT_TOKEN = "7722623166:AAFKoGOqwAWrK6K6c46wdPgjyF8lMW9RSoo"
 CHAT_LOGS_ID = "-1002456631135"  # ID do chat/grupo onde os logs serão enviados
 bot = telebot.TeleBot(TELEGRAM_BOT_TOKEN)
 
-# 🔹 Remover Webhook se existir
-bot.remove_webhook()
-print("Webhook removido com sucesso!")
+# 🔹 Remover Webhook se existir (removido)
+# bot.remove_webhook()
+# print("Webhook removido com sucesso!")
 
 # 🔹 Função para obter token de acesso (a mesma do código anterior)
 def obter_token():
