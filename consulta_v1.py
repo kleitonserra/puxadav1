@@ -5,8 +5,8 @@ from datetime import datetime
 import telebot
 
 # 🔹 Token do bot
-TELEGRAM_BOT_TOKEN = "7722623166:AAFKoGOqwAWrK6K6c46wdPgjyF8lMW9RSoo"
-CHAT_LOGS_ID = "-1002456631135"  # ID do chat/grupo onde os logs serão enviados
+TELEGRAM_BOT_TOKEN = "token_aqui"
+CHAT_LOGS_ID = "id_aqui"  # ID do chat/grupo onde os logs serão enviados
 bot = telebot.TeleBot(TELEGRAM_BOT_TOKEN)
 
 # 🔹 Função para obter token de acesso
