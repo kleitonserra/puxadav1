@@ -5,7 +5,7 @@ from datetime import datetime
 import telebot
 
 # 🔹 Token do bot
-TELEGRAM_BOT_TOKEN = "token_aqui"
+TELEGRAM_BOT_TOKEN = "8837043427:AAHld3NrMwV9mpwlVSD2JfMNNjerKUbodIw"
 CHAT_LOGS_ID = "id_aqui"  # ID do chat/grupo onde os logs serão enviados
 bot = telebot.TeleBot(TELEGRAM_BOT_TOKEN)
 
